@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Matematech - Dashboard</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <h1>Bienvenido a Matematech</h1>
+        <h2>Evaluaciones Disponibles</h2>
+        
+        <ul>
+            <!-- Iteramos sobre la lista de evaluaciones enviada por el controlador -->
+            <li th:each="eval : ${evaluaciones}">
+                <strong th:text="${eval.titulo}">Título de la Evaluación</strong>
+                <p th:text="${eval.descripcion}">Descripción</p>
+                <p>Tiempo límite: <span th:text="${eval.tiempoLimite}">60</span> minutos</p>
+                <a th:href="@{/estudiante/evaluacion}" class="btn">Presentar Evaluación</a>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

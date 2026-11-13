@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Matematech - Login</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <main class="container">
+        <h1>Matematech</h1>
+        <form action="/login" method="post">
+            <label for="correo">Correo</label>
+            <input id="correo" name="correo" type="email" placeholder="usuario@ejemplo.com" required>
+
+            <label for="contrasena">Contraseña</label>
+            <input id="contrasena" name="contrasena" type="password" required>
+
+            <button type="submit">Iniciar sesión</button>
+        </form>
+        <p>¿No tienes cuenta? <a href="/registro">Regístrate</a></p>
+    </main>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#142b4a">
+    <title>Panel principal | MatemaTech</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="app-page">
+    <div class="app-layout">
+        <aside class="sidebar">
+            <a class="brand sidebar-brand" th:href="@{/dashboard}">
+                <span class="brand-mark">M</span>
+                <span>matema<span class="brand-accent">tech</span></span>
+            </a>
+
+            <div class="sidebar-label">MENÚ PRINCIPAL</div>
+
+            <nav class="side-nav" aria-label="Navegación principal">
+                <a class="side-link active" th:href="@{/dashboard}">
+                    <span class="nav-icon">▦</span> Panel principal
+                </a>
+                <a class="side-link" th:href="@{/estudiante/evaluacion}">
+                    <span class="nav-icon">✓</span> Evaluaciones
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <div class="sidebar-note">
+                    <span class="note-icon">✦</span>
+                    <strong>Un paso a la vez</strong>
+                    <p>La constancia también es una forma de avanzar.</p>
+                </div>
+
+                <a class="side-link logout-link" th:href="@{/login}">
+                    <span class="nav-icon">↪</span> Cerrar sesión
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-area">
+            <header class="topbar">
+                <div>
+                    <span class="topbar-kicker">MATEMATECH / INICIO</span>
+                    <p class="topbar-title">Tu espacio de aprendizaje</p>
+                </div>
+
+                <div class="topbar-user">
+                    <span class="avatar">M</span>
+                    <span class="user-meta">
+                        <strong>Mi cuenta</strong>
+                        <small>MatemaTech</small>
+                    </span>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <section class="welcome-panel">
+                    <div class="welcome-copy">
+                        <span class="eyebrow eyebrow-light">
+                            APRENDE A TU RITMO
+                        </span>
+
+                        <h1>¡Bienvenido a<br>MatemaTech!</h1>
+
+                        <p>
+                            Explora tus evaluaciones disponibles y sigue
+                            fortaleciendo tus conocimientos en matemáticas.
+                        </p>
+
+                        <a class="button button-white" href="#evaluaciones">
+                            Ver evaluaciones
+                            <span aria-hidden="true">↓</span>
+                        </a>
+                    </div>
+
+                    <div class="welcome-art" aria-hidden="true">
+                        <div class="art-circle circle-back"></div>
+                        <div class="art-circle circle-front"></div>
+                        <span class="art-formula formula-a">a² + b²</span>
+                        <span class="art-formula formula-b">π</span>
+                        <span class="art-formula formula-c">∑</span>
+                        <span class="art-formula formula-d">√x</span>
+
+                        <div class="art-card">
+                            <span>+</span>
+                            <span>−</span>
+                            <span>×</span>
+                            <span>÷</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section-heading" id="evaluaciones">
+                    <div>
+                        <span class="eyebrow">CONTINÚA TU CAMINO</span>
+                        <h2>Evaluaciones disponibles</h2>
+                        <p>
+                            Selecciona una evaluación para consultar sus detalles.
+                        </p>
+                    </div>
+
+                    <span class="section-count">
+                        <span th:text="${#lists.size(evaluaciones)}">0</span>
+                        disponibles
+                    </span>
+                </section>
+
+                <div class="evaluation-grid"
+                     th:if="${not #lists.isEmpty(evaluaciones)}">
+
+                    <article class="evaluation-card"
+                             th:each="eval, iter : ${evaluaciones}">
+
+                        <div class="evaluation-card-top">
+                            <span class="evaluation-icon"
+                                  th:text="${iter.index % 2 == 0 ? '∑' : 'π'}">
+                                ∑
+                            </span>
+
+                            <span class="status-pill">Disponible</span>
+                        </div>
+
+                        <div class="evaluation-body">
+                            <span class="card-overline">EVALUACIÓN</span>
+
+                            <h3 th:text="${eval.titulo}">
+                                Título de la evaluación
+                            </h3>
+
+                            <p class="evaluation-description"
+                               th:text="${eval.descripcion}">
+                                Descripción de la evaluación
+                            </p>
+
+                            <div class="evaluation-meta">
+                                <span>
+                                    <span class="meta-symbol">◷</span>
+                                    <span th:text="${eval.tiempoLimite}">60</span>
+                                    min
+                                </span>
+                            </div>
+
+                            <a class="button button-outline button-full"
+                               th:href="@{/estudiante/evaluacion}">
+                                Ver evaluación
+                                <span aria-hidden="true">→</span>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="empty-state"
+                     th:if="${#lists.isEmpty(evaluaciones)}">
+
+                    <div class="empty-icon">∑</div>
+                    <h3>Aún no hay evaluaciones</h3>
+                    <p>
+                        Cuando se publiquen nuevas evaluaciones,
+                        aparecerán aquí.
+                    </p>
+                </div>
+
+                <footer class="app-footer">
+                    <span>© 2026 MatemaTech</span>
+                    <span>Aprender es avanzar.</span>
+                </footer>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
