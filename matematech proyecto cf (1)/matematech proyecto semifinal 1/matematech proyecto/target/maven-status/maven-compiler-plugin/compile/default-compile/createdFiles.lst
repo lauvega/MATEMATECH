@@ -1,0 +1,14 @@
+com\matematech\matematech\modelo\Competencia.class
+com\matematech\matematech\control\UsuarioController.class
+com\matematech\matematech\modelo\Pregunta.class
+com\matematech\matematech\modelo\Docente.class
+com\matematech\matematech\modelo\Usuario.class
+com\matematech\matematech\modelo\Opcion.class
+com\matematech\matematech\control\HomeController.class
+com\matematech\matematech\MatematechApplication.class
+com\matematech\matematech\modelo\Estudiante.class
+com\matematech\matematech\control\EvaluacionController.class
+com\matematech\matematech\control\PreguntaController.class
+com\matematech\matematech\modelo\Resultado.class
+com\matematech\matematech\modelo\Evaluacion.class
+com\matematech\matematech\control\ResultadoController.class

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matematech - Dashboard Estudiante</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div class="dashboard-container">
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            <span>Matematech</span>
+        </div>
+        <ul class="nav-links">
+            <li>
+                <a th:href="@{/dashboard}" class="active">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> Inicio
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/evaluacion}">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg> Simulacros
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/logout}">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.1 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg> Cerrar Sesión
+                </a>
+            </li>
+        </ul>
+        <div style="font-size: 0.75rem; color: #64748b; text-align: center; margin-top: auto;">
+            &copy; 2026 Matematech
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="header-top">
+            <div class="user-welcome">
+                <h2>Dashboard, <span th:text="${usuario.nombre}">Estudiante</span> (Grado 11)</h2>
+                <p>Bienvenido de nuevo a tu plataforma de entrenamiento ICFES.</p>
+            </div>
+            <div class="user-profile-badge">
+                <span style="font-weight: 600; font-size: 0.9rem;" th:text="${usuario.nombre}">Estudiante</span>
+            </div>
+        </div>
+
+        <div class="grid-dashboard">
+            <div>
+                <div class="card-box">
+                    <h3>Mi Progreso General</h3>
+                    <div style="display: flex; align-items: center; gap: 30px; margin-top: 20px;">
+                        <div style="font-size: 2.8rem; font-weight: 700; color: var(--accent-green);" th:text="${porcentajeObtenido} + '%'">0%</div>
+                        <div>
+                            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 8px;">Competencias evaluadas:</p>
+                            <ul style="list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem; font-weight: 500;">
+                                <li>🔵 Razonamiento y Argumentación</li>
+                                <li>🟢 Ejecución y Planteamiento</li>
+                                <li>🟢 Interpretación y Representación</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-box">
+                    <h3>Desempeño por Componente Matemático</h3>
+                    <div style="height: 180px; display: flex; align-items: flex-end; justify-content: space-around; padding-top: 20px; border-bottom: 2px solid var(--border-color);">
+                        <div th:style="'width: 40px; background: var(--primary); height: ' + ${porcentajeObtenido} + '%; border-radius: 8px 8px 0 0; position: relative; min-height: 15px;'" ><span style="position: absolute; top: -25px; left: 0; font-size: 0.75rem; font-weight: 600;" th:text="${porcentajeObtenido} + '%'">0%</span></div>
+                        <div th:style="'width: 40px; background: var(--accent-green); height: ' + ${porcentajeObtenido} + '%; border-radius: 8px 8px 0 0; position: relative; min-height: 15px;'" ><span style="position: absolute; top: -25px; left: 0; font-size: 0.75rem; font-weight: 600;" th:text="${porcentajeObtenido} + '%'">0%</span></div>
+                        <div th:style="'width: 40px; background: #3b82f6; height: ' + ${porcentajeObtenido} + '%; border-radius: 8px 8px 0 0; position: relative; min-height: 15px;'" ><span style="position: absolute; top: -25px; left: 0; font-size: 0.75rem; font-weight: 600;" th:text="${porcentajeObtenido} + '%'">0%</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card-box">
+                    <h3>Último Simulacro</h3>
+                    <div style="text-align: center; padding: 20px 0;">
+                        <div th:if="${yaHizoSimulacro}">
+                            <div style="font-size: 2.2rem; font-weight: 700; color: var(--accent-green); margin-bottom: 5px;" th:text="${porcentajeObtenido} + '%'">0%</div>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">Calificación obtenida en tu evaluación.</p>
+                        </div>
+                        <div th:if="${!yaHizoSimulacro}">
+                            <p style="font-size: 0.95rem; color: var(--text-muted);">Aún no has realizado ningún simulacro.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-box">
+                    <h3>Simulacros Disponibles</h3>
+                    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+                        <a th:if="${!yaHizoSimulacro}" th:href="@{/evaluacion}" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 12px; text-decoration: none; color: var(--text-main); font-weight: 600; transition: all 0.2s;">
+                            <span>Hacer Simulacro Saber 11 #1</span>
+                            <span style="color: var(--primary);">&gt;</span>
+                        </a>
+
+                        <a th:if="${yaHizoSimulacro}" th:href="@{/evaluacion}" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 12px; text-decoration: none; color: var(--text-main); font-weight: 600; transition: all 0.2s;">
+                            <span>Repetir o Revisar Simulacro</span>
+                            <span style="color: var(--primary);">&gt;</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<footer class="site-footer">
+    &copy; 2026 MATEMATECH &middot; Proyecto académico
+</footer>
+</body>
+</html>

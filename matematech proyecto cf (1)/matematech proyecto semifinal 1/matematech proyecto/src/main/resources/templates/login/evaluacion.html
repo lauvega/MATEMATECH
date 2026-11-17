@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matematech - Simulacro en Vivo</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body style="background: #f1f5f9;">
+<div class="exam-container">
+    <div class="exam-layout">
+        <div class="question-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h2 id="question-title" style="font-size: 1.3rem; font-weight: 700; color: var(--text-main);">Cargando preguntas...</h2>
+                <div id="timer" style="font-size: 1.1rem; font-weight: 700; color: var(--primary); background: #eff6ff; padding: 6px 14px; border-radius: 20px;">⏱ 60:00</div>
+            </div>
+
+            <p id="question-text" style="font-size: 1.1rem; line-height: 1.6; color: var(--text-main); margin-bottom: 25px;">
+                Por favor espere mientras se sincroniza el banco de 53 preguntas desde la base de datos...
+            </p>
+
+            <div class="options-grid" id="options-container"></div>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                <button onclick="cambiarPregunta(-1)" class="btn-primary" style="background: #64748b; cursor: pointer;">Anterior</button>
+                <button onclick="cambiarPregunta(1)" class="btn-primary" style="cursor: pointer;">Siguiente</button>
+            </div>
+        </div>
+
+        <div class="question-navigator">
+            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 10px;">Preguntas (53)</h3>
+            <div class="q-grid" id="navigator-grid" style="max-height: 350px; overflow-y: auto;"></div>
+            <div style="margin-top: 25px;">
+                <button onclick="finalizarExamen()" class="btn-primary" style="text-align: center; width: 100%; border: none; cursor: pointer; font-size: 0.9rem;">Finalizar Examen</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let tiempoRestante = 60 * 60;
+    const timerElement = document.getElementById('timer');
+
+    function actualizarCronometro() {
+        let minutos = Math.floor(tiempoRestante / 60);
+        let segundos = tiempoRestante % 60;
+        minutos = minutos < 10 ? '0' + minutos : minutos;
+        segundos = segundos < 10 ? '0' + segundos : segundos;
+        timerElement.innerText = `⏱ ${minutos}:${segundos}`;
+        if (tiempoRestante > 0) tiempoRestante--;
+        else {
+            alert("¡El tiempo ha terminado!");
+            finalizarExamenAutomatico();
+        }
+    }
+    setInterval(actualizarCronometro, 1000);
+
+    let preguntasBanco = [];
+    let indiceActual = 0;
+    let respuestasUsuario = {};
+
+    async function cargarPreguntasDesdeBD() {
+        try {
+            const response = await fetch('/api/evaluaciones/1/preguntas');
+            preguntasBanco = await response.json();
+            if (preguntasBanco.length > 0) {
+                cargarPregunta(0);
+            } else {
+                document.getElementById('question-title').innerText = "Sin preguntas";
+                document.getElementById('question-text').innerText = "No se encontraron preguntas registradas en la base de datos.";
+            }
+        } catch (error) {
+            console.error("Error al cargar las preguntas:", error);
+        }
+    }
+
+    function cargarPregunta(index) {
+        indiceActual = index;
+        const p = preguntasBanco[index];
+
+        document.getElementById('question-title').innerText = `Pregunta ${index + 1} de ${preguntasBanco.length} (${p.competencia})`;
+        document.getElementById('question-text').innerText = p.enunciado;
+
+        const contenedorOpciones = document.getElementById('options-container');
+        contenedorOpciones.innerHTML = '';
+
+        p.opciones.forEach((op) => {
+            const div = document.createElement('div');
+            div.className = 'option-item';
+
+            if (respuestasUsuario[index] === op.letra) {
+                div.classList.add('selected');
+            }
+
+            div.innerHTML = `
+                <div class="option-letter">${op.letra}</div>
+                <div style="font-weight: 500;">${op.texto}</div>
+            `;
+
+            div.onclick = () => {
+                document.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
+                div.classList.add('selected');
+                respuestasUsuario[index] = op.letra;
+                actualizarNavegadorLateral();
+            };
+
+            contenedorOpciones.appendChild(div);
+        });
+
+        actualizarNavegadorLateral();
+    }
+
+    function cambiarPregunta(direccion) {
+        let nuevoIndice = indiceActual + direccion;
+        if (nuevoIndice >= 0 && nuevoIndice < preguntasBanco.length) {
+            cargarPregunta(nuevoIndice);
+        }
+    }
+
+    function actualizarNavegadorLateral() {
+        const grid = document.getElementById('navigator-grid');
+        grid.innerHTML = '';
+
+        preguntasBanco.forEach((_, i) => {
+            const badge = document.createElement('div');
+            badge.className = 'q-badge';
+            if (i === indiceActual) badge.classList.add('current');
+            if (respuestasUsuario[i]) badge.classList.add('answered');
+            badge.innerText = i + 1;
+            badge.onclick = () => cargarPregunta(i);
+            grid.appendChild(badge);
+        });
+    }
+
+    async function finalizarExamen() {
+        if (!confirm("¿Estás seguro de finalizar el simulacro? Se calculará tu desempeño.")) return;
+        enviarResultadosAlServidor();
+    }
+
+    async function finalizarExamenAutomatico() {
+        alert("El tiempo ha finalizado. Se guardarán tus respuestas actuales.");
+        enviarResultadosAlServidor();
+    }
+
+    async function enviarResultadosAlServidor() {
+        try {
+            const response = await fetch('/api/evaluaciones/1/finalizar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(respuestasUsuario)
+            });
+            const resultado = await response.json();
+            alert(`¡Simulacro finalizado!\nObtuviste ${resultado.correctas} de ${resultado.total} correctas.\nDesempeño: ${resultado.porcentaje.toFixed(1)}%`);
+            window.location.replace("/dashboard");
+        } catch (error) {
+            console.error("Error al finalizar:", error);
+        }
+    }
+
+    window.onload = cargarPreguntasDesdeBD;
+</script>
+</body>
+</html>
